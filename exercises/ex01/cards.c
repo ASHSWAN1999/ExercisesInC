@@ -71,3 +71,28 @@ int main() {
 
   } while (card_name[0]!='X');
 }
+
+/*
+int x = 5 corresponds to: 	movl	$5, -4(%rbp)
+After -O2 optimization, this line appears to be gone
+
+When printing x
+Without optimization, 	movl	$5, -4(%rbp) still apears along
+with a call to printf
+
+With ptimization, the line becomes 	movl	$5, %edx and printf
+disapears
+
+When printing y
+Without optimization 5 is stored as 	movl	$5, -8(%rbp)and
+printf is invoked
+
+With optimization 5 does not even appear outside of Ubuntu
+versions and printf is gone
+
+This may suggest that optimization does not store unecessary
+variables like x, because it determines that the value of y
+will always be 5 anyways. It also suggests that it replaces
+functions like printf with lighter weight versions when
+possible. 
+*/
