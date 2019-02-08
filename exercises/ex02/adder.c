@@ -41,7 +41,7 @@ int get_input() {
 
   returns: none
 */
-void add(char* list, int counter) {
+void add(int* list, int counter) {
   int i;
   int count = 0;
 
@@ -56,7 +56,7 @@ void add(char* list, int counter) {
 
 
 int main() {
-  char list[10];
+  int list[10];
   int i;
   int j;
   int result;
