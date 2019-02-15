@@ -33,8 +33,23 @@ s: string
 returns: string
 */
 char *reverse_string(char *s) {
-    //TODO: Fill this in.
-    return "";
+    int i = 0;
+    int j = 0;
+
+    //calculates length of string s
+    while(s[i]!='\0') {
+      i++;
+    }
+
+    //allocates string length plus 1 for null operator
+    char *rev = malloc(i+1);
+
+    //iterates through s backwards and records results in rev forwards
+    for(j=0; j<i; j++) {
+      rev[j] = s[i-j-1];
+    }
+
+    return rev;
 }
 
 /* ctoi: Converts a character to integer.
@@ -53,13 +68,13 @@ i: integer 0 to 9
 returns: character '0' to '9'
 */
 char itoc(int i) {
-    //TODO: Fill this in, with an appropriate assertion.
-    return '0';
+
+    return i + '0';
 }
 
 /* add_digits: Adds two decimal digits, returns the total and carry.
 
-For example, if a='5', b='6', and carry='1', the sum is 12, so
+For example, if a='5', b='6', and c='1', the sum is 12, so
 the output value of total should be '2' and carry should be '1'
 
 a: character '0' to '9'
@@ -70,7 +85,14 @@ carry: pointer to char
 
 */
 void add_digits(char a, char b, char c, char *total, char *carry) {
-    //TODO: Fill this in.
+    int i_a = ctoi(a);
+    int i_b = ctoi(b);
+    int i_c = ctoi(c);
+
+    int added = i_a + i_b + i_c;
+
+    *total = itoc(added % 10);
+    *carry = itoc(added / 10);
 }
 
 /* Define a type to represent a BigInt.
@@ -184,12 +206,12 @@ void test_add_bigint() {
     char *t = "99999999999999999999999999999999999999999999";
     char *res = "000000000000000000000000000000000000000000001";
 
-    BigInt big1 = make_bigint(s);    
+    BigInt big1 = make_bigint(s);
     BigInt big2 = make_bigint(t);
     BigInt big3 = malloc(100);
 
 	add_bigint(big1, big2, '0', big3);
-    
+
     if (strcmp(big3, res) == 0) {
         printf("add_bigint passed\n");
     } else {
@@ -205,6 +227,6 @@ int main (int argc, char *argv[])
 
     //TODO: When you have the first three functions working,
     //      uncomment the following, and it should work.
-    // test_add_bigint();
+    test_add_bigint();
     return 0;
 }
