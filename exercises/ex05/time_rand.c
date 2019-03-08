@@ -76,4 +76,17 @@ main(int argc, char *argv[])
 
     time = time_func(iters, random_float);
     printf("%f ms \t random_float\n", time);
+
+    time = time_func(iters, my_random_double);
+    printf("%f ms \t my_random_double\n", time);
+
+    time = time_func(iters, random_double);
+    printf("%f ms \t random_double\n", time);
 }
+
+/*
+4.) dummy was the fastest of the random number generators.
+
+6.) my_random_double was much slower than random_double. It took more than
+    twice the time.
+*/
