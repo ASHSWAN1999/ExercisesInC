@@ -54,8 +54,19 @@ void print_list(Node **list) {
 * returns: int or -1 if the list is empty
 */
 int pop(Node **list) {
-    // FILL THIS IN!
-    return 0;
+  Node *current = *list;
+  Node *prev;
+
+    if((current)==NULL) { //handles empty list
+      return -1;
+    }
+    else {
+      int val = (current)->val;
+      prev = current; //stores pointer to popped node so it can be freed
+      *list = (current)->next;
+      free(prev);
+      return val;
+    }
 }
 
 
@@ -65,7 +76,9 @@ int pop(Node **list) {
 * val: value to add
 */
 void push(Node **list, int val) {
-    // FILL THIS IN!
+    Node *new = make_node(val, NULL);
+    new->next = *list;
+    *list = new;
 }
 
 
@@ -79,8 +92,32 @@ void push(Node **list, int val) {
 * returns: number of nodes removed
 */
 int remove_by_value(Node **list, int val) {
-    // FILL THIS IN!
+  Node *current = *list;
+  Node *prev;
+
+  if(current == NULL) { //handles empty list
     return 0;
+  }
+  else if (current->val == val) { //handles removing first node
+    prev = current;
+    *list = current->next;
+    free(prev);
+    return 1;
+  }
+  else { //loops through remaining nodes
+    while(current->val != val) {
+      if(current->next == NULL) {
+        return 0;
+      }
+      prev = current;
+      current = current->next;
+    }
+
+    prev->next = current->next; //points to node one beyond next
+    free(current);
+
+    return 1;
+  }
 }
 
 
@@ -91,7 +128,29 @@ int remove_by_value(Node **list, int val) {
 * list: pointer to pointer to Node
 */
 void reverse(Node **list) {
-    // FILL THIS IN!
+    if(*list == NULL) { //handles empty list
+      return;
+    }
+    else if((*list)->next == NULL) { //handles list length 1
+      return;
+    }
+    else { //reverses lists longer than length 1
+      Node *prev = *list;
+      Node *current = prev->next;
+      Node *temp = current->next;
+
+      prev->next = NULL; //first node becomes the last
+
+      while(temp != NULL) { //points each next to the previous node
+        current->next = prev;
+        prev = current;
+        current = temp;
+        temp = current->next;
+      }
+
+      current->next = prev;
+      *list = current; //reassigns head of the list
+    }
 }
 
 
@@ -105,6 +164,7 @@ int main() {
     print_list(list);
 
     int retval = pop(list);
+    // printf("%i\n", retval);
     print_list(list);
 
     push(list, retval+10);
@@ -113,9 +173,9 @@ int main() {
     remove_by_value(list, 3);
     print_list(list);
 
-    remove_by_value(list, 7);
+    remove_by_value(list, 11);
     print_list(list);
-
+    //
     reverse(list);
     print_list(list);
 }

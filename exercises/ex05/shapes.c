@@ -59,7 +59,11 @@ x, y: coordinates
 returns: new Rectangle; use free_rectangle to free
 */
 Rectangle *make_rectangle(Point *corner, double width, double height) {
-    // FILL THIS IN
+    Rectangle* rect = malloc(sizeof(Rectangle));
+    Point* corner_copy = make_point(corner->x, corner->y);
+    rect->corner = corner_copy;
+    rect->width = width;
+    rect->height = height;
     // What are the pros and cons of making a copy of corner?
     return NULL;
 }
@@ -82,7 +86,8 @@ char *rectangle_to_string(Rectangle *rectangle) {
 rectangle: Rectangle
 */
 void free_rectangle(Rectangle *rectangle) {
-    // FILL THIS IN
+    free(rectangle->corner);
+    free(rectangle);
 }
 
 /* Check whether a point is inside a rectangle.

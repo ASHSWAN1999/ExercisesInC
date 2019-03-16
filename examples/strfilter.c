@@ -8,7 +8,7 @@ char *strfilter1(char *string, char *letters) {
 
     // TODO: hoist strlen out of the loop!
     // See "Accidentally quadratic"
-    for (int i=0; i<strlen(string); i++) {
+    for (int i=0; i<strlen(string); i++) { //putting strlen in the loop is inefficent
         char *ptr = strchr(letters, string[i]);
         if (ptr) {
             buffer[j++] = string[i];
@@ -23,7 +23,7 @@ char *strfilter2(char *string, char *letters) {
     char *dest = buffer;
     char c;
 
-    while (c = *string++) {
+    while((c = *string++)) {
         char *ptr = strchr(letters, c);
         if (ptr) {
             *dest++ = c;
@@ -37,7 +37,7 @@ char *strfilter2(char *string, char *letters) {
 
 char *strfilter3(char *string, char *letters) {
     int length = strlen(string);
-    char buffer[length];
+    char buffer[length]; //also needs a plus 1 for the null
     int j = 0;
 
     for (int i=0; i<length; i++) {
@@ -46,22 +46,22 @@ char *strfilter3(char *string, char *letters) {
             buffer[j++] = string[i];
         }
     }
-    return buffer;
+    return strdup(buffer);
 }
 
 char *strfilter4(char *string, char *letters) {
     char buffer[100];
     char c;
 
-    while (c = *string++) {
+    while (c = *string++) { //increments the pointer after dereferencing and asigning val to c
         char *ptr = strchr(letters, c);
         if (ptr) {
-            strcat(buffer, c);
+            strcat(buffer, c); //both need to be null terminated strings
         }
     }
     int length = sizeof(buffer);
-    char *res = (char *) malloc (length * sizeof(char));
-    strcpy(buffer, res);
+    char *res = (char *) malloc (length * sizeof(char)); //need plus 1 for null
+    strcpy(buffer, res); //order is reversed
     return res;
 }
 
