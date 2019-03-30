@@ -133,7 +133,7 @@ int process_ip (struct ip *ip, int len)
      to get to the recvfrom unless there is a datagram waiting, and
      therefore the recvfrom should never block.  Nevertheless, it sometimes
      does, which is why, when we opened it, we set the NONBLOCK flag
-     and why, if it fails (errno = EAGAIN) we just go on. */
+     and why, if it fails (errno = EAGAIN) we just go on */
 
 int recv_dgram ()
 {
