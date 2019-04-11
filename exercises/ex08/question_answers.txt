@@ -1,0 +1,17 @@
+1.) GLib is written by GNOME. Its purpose is to provide data structures in C.
+Originally, it was a part of GTK, but was made into a seprate library because
+the data structure functionality could be used outside of GUI programming.
+A different name definitely would have been beneficial because, in researching
+library, everything came up with glibc, and there was no good way to comb out
+the information I was actually looking for.
+
+2.) A pro of using GLib rather than base C functionality is that you don't have
+to reinvent the wheel each time you need a given data structure. However, the
+upfront time cost of downloading and understanding the standards of this library
+are an obvious con. Compared to other similar programs, there does not seem
+to be a clear winner on which is the best data structure library, introducing
+the potential to spend lots of time figuring out the conventions of multiple
+libraries rather than know which to use out of the gate.
+
+3.) To compile a program using GLib, you  need a compliant C toolchain, Meson, 
+and pkg-config.
