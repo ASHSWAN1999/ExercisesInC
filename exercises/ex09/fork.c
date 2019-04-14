@@ -14,6 +14,7 @@ License: MIT License https://opensource.org/licenses/MIT
 #include <sys/types.h>
 #include <wait.h>
 
+int globalVar = 0;
 
 // errno is an external global variable that contains
 // error information
@@ -24,16 +25,26 @@ extern int errno;
 // beginning of the day, with microsecond precision
 double get_seconds() {
     struct timeval tv[1];
-
     gettimeofday(tv, NULL);
     return tv->tv_sec + tv->tv_usec / 1e6;
 }
 
 
-void child_code(int i)
-{
+void child_code(int i, int localVar, int* p) {
     sleep(i);
-    printf("Hello from child %d.\n", i);
+
+    printf("\n Child Process Initial Value :: localVar = %d, globalVar = %d",
+           localVar, globalVar);
+
+    localVar++;
+    globalVar++;
+
+    printf("\n Address of malloced mem child = %p and value is %d", p, *p);
+    *p = *p + 50;
+    printf("\n Address of malloced mem child = %p and value is %d", p, *p);
+    // *p = 200;
+    // printf("\n Address of malloced mem child = %p and value is %d", p, *p);
+    printf("Hello from child %d. ", i);
 }
 
 // main takes two parameters: argc is the number of command-line
@@ -45,6 +56,10 @@ int main(int argc, char *argv[])
     pid_t pid;
     double start, stop;
     int i, num_children;
+
+    int* p = malloc(sizeof(int));
+    *p = 0;
+    int localVar = 0;
 
     // the first command-line argument is the name of the executable.
     // if there is a second, it is the number of children to create.
@@ -72,7 +87,7 @@ int main(int argc, char *argv[])
 
         /* see if we're the parent or the child */
         if (pid == 0) {
-            child_code(i);
+            child_code(i, localVar, p);
             exit(i);
         }
     }
@@ -99,3 +114,18 @@ int main(int argc, char *argv[])
 
     exit(0);
 }
+
+"""
+
+ The child processes seem to have copies of the local (stack) and global
+ variables passed to them, as the second child did see that the first
+ incremented either variable. This goes for the malloced variable as well
+ (heap). However, upon printing the addresses of instance of the malloced variables,
+ they are all the same from child to child, indictating that variables share the
+ same virtual space but are stored in different physical locations.
+
+ The children seem to share the same code and statics segment given that they
+ can all read from globalVar and they all execute the same commands outlined
+ in child_code()
+
+ """

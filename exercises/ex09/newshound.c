@@ -39,14 +39,29 @@ int main(int argc, char *argv[])
     char *search_phrase = argv[1];
     char var[255];
 
+
+
     for (int i=0; i<num_feeds; i++) {
         sprintf(var, "RSS_FEED=%s", feeds[i]);
         char *vars[] = {var, NULL};
 
-        int res = execle(PYTHON, PYTHON, SCRIPT, search_phrase, NULL, vars);
-        if (res == -1) {
-            error("Can't run script.");
+        pid_t pid = fork();
+
+        if (pid == -1) {
+          fprintf(stderr, "Can't fork process: %s\n", strerror(errno));
+          return 1;
         }
+
+        if(pid == 0) {
+          int res = execle("/usr/bin/python", "/usr/bin/python", "./rssgossip.py",
+          search_phrase, NULL, vars);
+          if (res == -1) {
+              error("Can't run script.");
+              return 1;
+          }
+
+        }
+
     }
     return 0;
 }
