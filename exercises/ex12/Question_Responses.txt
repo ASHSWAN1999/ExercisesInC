@@ -1,0 +1,19 @@
+﻿counter.c 
+
+2.) It appears that the final value of the counter is correct. I tried it with values ranging from 10 to 500.
+
+3.) There is evidence that the threads are running concurrently and encountering synchronization errors because multiple children print the same values of counter, indicating that one is reading and still in the process of printing and incrementing when another reads the counter.
+
+counter_array.c 
+
+2.) Yes, synchronization errors occur. The children are often reading the same counter value, incrementing, and printing the same value rather than only reading when one child has finished incrementing.
+
+counter_array.c
+real	0m0.052s
+user	0m0.090s
+sys	0m0.004s
+
+counter_array_mutex.c
+real	0m0.165s
+user	0m0.168s
+sys	0m0.151s
