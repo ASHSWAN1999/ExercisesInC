@@ -49,7 +49,9 @@ void accumulator(gpointer key, gpointer value, gpointer user_data)
 {
     GSequence *seq = (GSequence *) user_data;
     Pair *pair = g_new(Pair, 1);
-    pair->word = (gchar *) key;
+
+    //creates a copy of the key so data structures are not shared - allows easy deallocation
+    pair->word = g_strdup((gchar *) key);
     pair->freq = *(gint *) value;
 
     g_sequence_insert_sorted(seq,
@@ -64,12 +66,22 @@ void incr(GHashTable* hash, gchar *key)
     gint *val = (gint *) g_hash_table_lookup(hash, key);
 
     if (val == NULL) {
+        //creates a copy of the key to put into hash table
+        gchar *key1 = g_strdup(key);
         gint *val1 = g_new(gint, 1);
         *val1 = 1;
-        g_hash_table_insert(hash, key, val1);
+        g_hash_table_insert(hash, key1, val1);
     } else {
         *val += 1;
     }
+}
+
+/* Deallocates a pair from a sequence */
+void pair_deallocate (gpointer p)
+{
+    Pair *pair = (Pair *) p;
+    g_free(pair->word);
+    g_free(pair);
 }
 
 int main(int argc, char** argv)
@@ -93,7 +105,9 @@ int main(int argc, char** argv)
     (one-L) NUL terminated strings */
     gchar **array;
     gchar line[128];
-    GHashTable* hash = g_hash_table_new(g_str_hash, g_str_equal);
+
+    //frees the keys and values of the hash table
+    GHashTable* hash = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
 
     // read lines from the file and build the hash table
     while (1) {
@@ -104,6 +118,7 @@ int main(int argc, char** argv)
         for (int i=0; array[i] != NULL; i++) {
             incr(hash, array[i]);
         }
+        g_strfreev(array); //frees the arrays created for each line
     }
     fclose(fp);
 
@@ -111,13 +126,13 @@ int main(int argc, char** argv)
     // g_hash_table_foreach(hash, (GHFunc) kv_printor, "Word %s freq %d\n");
 
     // iterate the hash table and build the sequence
-    GSequence *seq = g_sequence_new(NULL);
+    GSequence *seq = g_sequence_new((GDestroyNotify) pair_deallocate);
     g_hash_table_foreach(hash, (GHFunc) accumulator, (gpointer) seq);
 
     // iterate the sequence and print the pairs
     g_sequence_foreach(seq, (GFunc) pair_printor, NULL);
 
-    // try (unsuccessfully) to free everything
+    //frees everything!!!
     g_hash_table_destroy(hash);
     g_sequence_free(seq);
 

@@ -178,6 +178,18 @@ Node *make_something() {
     return node3;
 }
 
+/* Frees all nodes within a list by recursively finding the last node and
+  freeing on the way up.
+*/
+void free_list(Node* first) {
+    if(first==NULL) {
+        return;
+    } else {
+      free_list(first->next);
+      free(first);
+    }
+}
+
 
 int main() {
     // make a list of even numbers
@@ -207,7 +219,11 @@ int main() {
     print_list(&empty);
 
     Node *something = make_something();
-    free(something);
+
+    //free all lists
+    free_list(test_list);
+    free_list(something);
+    free_list(empty);
 
     return 0;
 }
